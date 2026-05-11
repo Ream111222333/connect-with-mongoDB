@@ -1,0 +1,59 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Home</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <main class="page-shell">
+    <section class="panel">
+      <div class="panel-header space-between">
+        <div>
+          <span class="eyebrow">MongoDB App</span>
+          <h1>User Registration</h1>
+          <p class="subtitle">Add a new user and view all users with a clean modern UI.</p>
+        </div>
+        <button class="secondary-btn theme-toggle" type="button">Dark mode</button>
+      </div>
+
+      <form class="form-card" action="/users" method="POST">
+        <label class="input-group">
+          <span>Name</span>
+          <input type="text" name="name" placeholder="Enter name" required />
+        </label>
+        <label class="input-group">
+          <span>Email</span>
+          <input type="email" name="email" placeholder="Enter email" required />
+        </label>
+        <button class="primary-btn" type="submit">Add User</button>
+      </form>
+
+      <div class="link-row">
+        <a class="secondary-btn" href="/users">View Users</a>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const toggle = document.querySelector('.theme-toggle');
+      if (!toggle) return;
+
+      const setTheme = theme => {
+        document.documentElement.dataset.theme = theme;
+        localStorage.setItem('theme', theme);
+        toggle.textContent = theme === 'dark' ? 'Light mode' : 'Dark mode';
+      };
+
+      const saved = localStorage.getItem('theme') || 'light';
+      setTheme(saved);
+
+      toggle.addEventListener('click', function() {
+        setTheme(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark');
+      });
+    });
+  </script>
+</body>
+</html>

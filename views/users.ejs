@@ -1,0 +1,105 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Users</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <main class="page-shell">
+    <section class="panel">
+      <div class="panel-header space-between">
+        <div>
+          <span class="eyebrow">User List</span>
+          <h1>All Users</h1>
+        </div>
+        <div class="actions-row">
+          <button class="secondary-btn theme-toggle" type="button">Dark mode</button>
+          <a class="secondary-btn" href="/">Back</a>
+        </div>
+      </div>
+
+      <% if (users && users.length) { %>
+        <div class="user-list">
+          <div class="user-list-header">
+            <span class="col-name">User</span>
+            <span class="col-email">Email</span>
+            <span class="col-actions">Actions</span>
+          </div>
+
+          <% users.forEach(user => { %>
+            <div class="user-row">
+              <div class="user-info">
+                <div class="avatar"><%= user.name.charAt(0).toUpperCase() %></div>
+                <div class="user-details">
+                  <span class="user-name"><%= user.name %></span>
+                  <span class="user-email-mobile"><%= user.email %></span>
+                </div>
+              </div>
+              <div class="user-email"><%= user.email %></div>
+              <div class="user-actions">
+                <button class="icon-btn edit-toggle" type="button" data-user="<%= user._id %>" title="Edit">Edit</button>
+                <form action="/users/<%= user._id %>/delete" method="POST" onsubmit="return confirm('Delete this user?')">
+                  <button class="icon-btn danger-btn" type="submit" title="Delete">Delete</button>
+                </form>
+              </div>
+
+              <form class="edit-form hidden" action="/users/<%= user._id %>/update" method="POST" id="edit-<%= user._id %>">
+                <label class="input-group">
+                  <span>Name</span>
+                  <input type="text" name="name" value="<%= user.name %>" required />
+                </label>
+                <label class="input-group">
+                  <span>Email</span>
+                  <input type="email" name="email" value="<%= user.email %>" required />
+                </label>
+                <div class="button-row">
+                  <button class="primary-btn" type="submit">Save</button>
+                  <button class="secondary-btn close-edit" type="button" data-user="<%= user._id %>">Cancel</button>
+                </div>
+              </form>
+            </div>
+          <% }) %>
+        </div>
+      <% } else { %>
+        <div class="empty-state">No users found yet. Add one from the home page.</div>
+      <% } %>
+    </section>
+  </main>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      document.querySelectorAll('.edit-toggle').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const form = document.getElementById(`edit-${this.dataset.user}`);
+          form.classList.toggle('hidden');
+        });
+      });
+
+      document.querySelectorAll('.close-edit').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const form = document.getElementById(`edit-${this.dataset.user}`);
+          form.classList.add('hidden');
+        });
+      });
+
+      const toggle = document.querySelector('.theme-toggle');
+      if (!toggle) return;
+
+      const setTheme = theme => {
+        document.documentElement.dataset.theme = theme;
+        localStorage.setItem('theme', theme);
+        toggle.textContent = theme === 'dark' ? 'Light mode' : 'Dark mode';
+      };
+
+      const saved = localStorage.getItem('theme') || 'light';
+      setTheme(saved);
+
+      toggle.addEventListener('click', function() {
+        setTheme(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark');
+      });
+    });
+  </script>
+</body>
+</html>
